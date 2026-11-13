@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Mathdle</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Mathdle</h1>
+    <p class="subtitulo">Descubra a função do dia: escolha um x, veja o y e chute a função.</p>
+
+    <!-- Nome do jogador e escolha do nível -->
+    <section class="caixa">
+        <label>Seu nome: <input id="jogador" type="text" maxlength="50" placeholder="Anônimo"></label>
+        <div class="niveis">
+            <button class="nivel" data-nivel="1">Nível 1</button>
+            <button class="nivel" data-nivel="2">Nível 2</button>
+            <button class="nivel" data-nivel="3">Nível 3</button>
+        </div>
+        <p id="info-nivel"></p>
+    </section>
+
+    <!-- Consultar um valor de x -->
+    <section class="caixa">
+        <h2>1. Consulte valores</h2>
+        <p>Consultas restantes: <strong id="consultas-restantes">5</strong></p>
+        <input id="valor-x" type="number" min="-10" max="10" step="any" placeholder="x entre -10 e 10">
+        <button id="btn-consultar">Consultar</button>
+
+        <table>
+            <thead><tr><th>x</th><th>f(x)</th><th>origem</th></tr></thead>
+            <tbody id="tabela-pontos"></tbody>
+        </table>
+    </section>
+
+    <!-- Fazer o palpite -->
+    <section class="caixa">
+        <h2>2. Faça seu palpite</h2>
+        <p>Palpites restantes: <strong id="palpites-restantes">6</strong></p>
+        <select id="tipo"></select>
+        <p id="formula" class="formula"></p>
+        <label>a = <input id="coef-a" type="number" step="1"></label>
+        <label>b = <input id="coef-b" type="number" step="1"></label>
+        <label id="campo-c">c = <input id="coef-c" type="number" step="1"></label>
+        <button id="btn-palpite">Chutar</button>
+    </section>
+
+    <p id="mensagem" class="mensagem"></p>
+
+    <!-- Ranking do dia -->
+    <section class="caixa">
+        <h2>Ranking de hoje</h2>
+        <ol id="ranking"></ol>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>

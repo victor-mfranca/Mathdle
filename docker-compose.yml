@@ -1,0 +1,43 @@
+# Mathdle - 3 serviços:
+#   banco    -> PostgreSQL (guarda as funções do dia e as partidas)
+#   api      -> nossa API em Python/Flask (lógica do jogo)  <- serviço próprio
+#   frontend -> Nginx (serve a página e repassa /api/ para a API)
+
+services:
+  banco:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: mathdle
+      POSTGRES_PASSWORD: mathdle
+      POSTGRES_DB: mathdle
+    volumes:
+      - ./banco/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - dados_banco:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mathdle"]
+      interval: 5s
+      retries: 10
+
+  api:
+    build: ./api
+    environment:
+      DB_HOST: banco
+      DB_USER: mathdle
+      DB_PASSWORD: mathdle
+      DB_NAME: mathdle
+    depends_on:
+      banco:
+        condition: service_healthy
+
+  frontend:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - ./frontend:/usr/share/nginx/html
+      - ./frontend/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - api
+
+volumes:
+  dados_banco:
