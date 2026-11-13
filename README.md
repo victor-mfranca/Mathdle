@@ -1,7 +1,6 @@
 # Mathdle
 
 Jogo diário no navegador: o jogador consulta valores de x, vê f(x) e tenta descobrir a função do dia.
-Projeto Final de Computação em Nuvem (PUC-Campinas, 2026).
 
 ## Serviços
 
