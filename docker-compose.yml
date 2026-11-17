@@ -2,10 +2,12 @@
 #   banco    -> PostgreSQL (guarda as funções do dia e as partidas)
 #   api      -> nossa API em Python/Flask (lógica do jogo)  <- serviço próprio
 #   frontend -> Nginx (serve a página e repassa /api/ para a API)
+#
+# Imagens fixadas por versão + digest (sha256) para builds reproduzíveis.
 
 services:
   banco:
-    image: postgres:16
+    image: postgres:16.16-trixie@sha256:dd2bf3ce2dc83a81674cf7f217fcfd8a5009a4b325dda5b843bfee82a06cff6f
     environment:
       POSTGRES_USER: mathdle
       POSTGRES_PASSWORD: mathdle
@@ -30,7 +32,7 @@ services:
         condition: service_healthy
 
   frontend:
-    image: nginx:alpine
+    image: nginx:1.31.8-alpine3.24@sha256:fed7e14be83cbd2661a75cdc5b872d936cf155d46c327084d30b8df19ae88d72
     ports:
       - "8080:80"
     volumes:
