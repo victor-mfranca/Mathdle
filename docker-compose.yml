@@ -13,7 +13,8 @@ services:
       POSTGRES_PASSWORD: mathdle
       POSTGRES_DB: mathdle
     volumes:
-      - ./banco/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./banco/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./banco/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql
       - dados_banco:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U mathdle"]
