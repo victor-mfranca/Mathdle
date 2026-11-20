@@ -2,56 +2,139 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Mathdle</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Mathdle</h1>
-    <p class="subtitulo">Descubra a função do dia: escolha um x, veja o y e chute a função.</p>
 
-    <!-- Nome do jogador e escolha do nível -->
-    <section class="caixa">
-        <label>Seu nome: <input id="jogador" type="text" maxlength="50" placeholder="Anônimo"></label>
-        <div class="niveis">
-            <button class="nivel" data-nivel="1">Nível 1</button>
-            <button class="nivel" data-nivel="2">Nível 2</button>
-            <button class="nivel" data-nivel="3">Nível 3</button>
+    <!-- ================= TELA INICIAL ================= -->
+    <main id="tela-inicio" class="tela tela-inicio">
+        <h1 class="logo">Ma<span class="mais" aria-hidden="true">+</span><span class="sr-only">t</span>hdle</h1>
+        <p class="subtitulo">Descubra a função do dia: escolha um x, veja o y e chute a função.</p>
+
+        <label for="jogador" class="rotulo">Seu nome (aparece no ranking)</label>
+        <input id="jogador" class="campo-nome" type="text" maxlength="50" autocomplete="nickname" placeholder="Anônimo">
+
+        <div class="niveis" role="group" aria-label="Escolha o nível">
+            <button class="nivel ativo" data-nivel="1" aria-pressed="true">Nível 1<small>linear</small></button>
+            <button class="nivel" data-nivel="2" aria-pressed="false">Nível 2<small>quadrática ou log</small></button>
+            <button class="nivel" data-nivel="3" aria-pressed="false">Nível 3<small>exponencial ou cúbica</small></button>
         </div>
-        <p id="info-nivel"></p>
-    </section>
 
-    <!-- Consultar um valor de x -->
-    <section class="caixa">
-        <h2>1. Consulte valores</h2>
-        <p>Consultas restantes: <strong id="consultas-restantes">5</strong></p>
-        <input id="valor-x" type="number" min="-10" max="10" step="any" placeholder="x entre -10 e 10">
-        <button id="btn-consultar">Consultar</button>
+        <button id="btn-jogar" class="btn-principal btn-jogar">Jogar</button>
+        <p id="erro-inicio" class="mensagem erro" role="alert"></p>
 
-        <table>
-            <thead><tr><th>x</th><th>f(x)</th><th>origem</th></tr></thead>
-            <tbody id="tabela-pontos"></tbody>
-        </table>
-    </section>
+        <section class="como-jogar" aria-labelledby="titulo-como-jogar">
+            <h2 id="titulo-como-jogar">Como jogar</h2>
+            <ol>
+                <li>Digite um <b>x</b> entre -10 e 10 e veja quanto vale <b>f(x)</b>. Você tem <b>5 consultas</b>.</li>
+                <li>Escolha o tipo da função e os coeficientes <b>a</b>, <b>b</b> e <b>c</b> (inteiros de -5 a 5).</li>
+                <li>Você tem <b>6 palpites</b>. Se errar, ganha uma dica: um ponto em que o seu palpite e a função certa dão valores diferentes.</li>
+                <li>Errou o <b>5º palpite</b>? Os campos ganham cores dizendo se cada coeficiente precisa <b>aumentar ↑</b>, <b>diminuir ↓</b> ou se já está <b>certo ✓</b>.</li>
+                <li>A função é a mesma para todo mundo e muda todo dia.</li>
+            </ol>
+        </section>
+    </main>
 
-    <!-- Fazer o palpite -->
-    <section class="caixa">
-        <h2>2. Faça seu palpite</h2>
-        <p>Palpites restantes: <strong id="palpites-restantes">6</strong></p>
-        <select id="tipo"></select>
-        <p id="formula" class="formula"></p>
-        <label>a = <input id="coef-a" type="number" step="1"></label>
-        <label>b = <input id="coef-b" type="number" step="1"></label>
-        <label id="campo-c">c = <input id="coef-c" type="number" step="1"></label>
-        <button id="btn-palpite">Chutar</button>
-    </section>
+    <!-- ================= TELA DO JOGO ================= -->
+    <main id="tela-jogo" class="tela tela-jogo escondida">
+        <header class="topo">
+            <button id="btn-voltar" class="btn-link">← Início</button>
+            <h1 class="logo logo-pequeno">Ma<span class="mais" aria-hidden="true">+</span><span class="sr-only">t</span>hdle</h1>
+            <span id="rotulo-nivel" class="rotulo-nivel">Nível 1</span>
+        </header>
 
-    <p id="mensagem" class="mensagem"></p>
+        <div class="jogo">
+            <!-- Coluna da esquerda: consultas e palpite -->
+            <div class="coluna-esquerda">
+                <section class="caixa" aria-labelledby="titulo-consulta">
+                    <h2 id="titulo-consulta">1. Consulte valores</h2>
+                    <label for="valor-x" class="rotulo">Valor de x</label>
+                    <div class="linha">
+                        <input id="valor-x" type="number" min="-10" max="10" step="any"
+                               aria-describedby="ajuda-x erro-consulta">
+                        <button id="btn-consultar" class="btn-secundario">Consultar</button>
+                    </div>
+                    <p id="ajuda-x" class="ajuda">Entre -10 e 10 (pode ser decimal).</p>
+                    <p id="erro-consulta" class="erro-campo" role="alert"></p>
+                    <p class="contador">Consultas restantes: <strong id="consultas-restantes">5</strong></p>
 
-    <!-- Ranking do dia -->
-    <section class="caixa">
-        <h2>Ranking de hoje</h2>
-        <ol id="ranking"></ol>
-    </section>
+                    <table>
+                        <caption class="sr-only">Pontos descobertos</caption>
+                        <thead><tr><th scope="col">x</th><th scope="col">f(x)</th><th scope="col">origem</th></tr></thead>
+                        <tbody id="tabela-pontos"></tbody>
+                    </table>
+                    <p id="sem-pontos" class="vazio">Nenhum ponto ainda. Consulte um x para começar.</p>
+                </section>
+
+                <section class="caixa" aria-labelledby="titulo-palpite">
+                    <h2 id="titulo-palpite">2. Faça seu palpite</h2>
+                    <label for="tipo" class="rotulo">Tipo da função</label>
+                    <select id="tipo" aria-describedby="pista-tipo"></select>
+                    <p id="pista-tipo" class="pista"></p>
+                    <p id="formula" class="formula"></p>
+                    <div class="coeficientes">
+                        <div class="coef" id="campo-a">
+                            <label>a <input id="coef-a" type="number" step="1" min="-5" max="5" aria-describedby="pista-a ajuda-coef erro-palpite"></label>
+                            <p id="pista-a" class="pista"></p>
+                        </div>
+                        <div class="coef" id="campo-b">
+                            <label>b <input id="coef-b" type="number" step="1" min="-5" max="5" aria-describedby="pista-b ajuda-coef erro-palpite"></label>
+                            <p id="pista-b" class="pista"></p>
+                        </div>
+                        <div class="coef" id="campo-c">
+                            <label>c <input id="coef-c" type="number" step="1" min="-5" max="5" aria-describedby="pista-c ajuda-coef erro-palpite"></label>
+                            <p id="pista-c" class="pista"></p>
+                        </div>
+                    </div>
+                    <p id="pista-resumo" class="sr-only" role="status"></p>
+                    <p id="ajuda-coef" class="ajuda centro">Inteiros de -5 a 5 (a não pode ser 0).</p>
+                    <p id="erro-palpite" class="erro-campo centro" role="alert"></p>
+                    <button id="btn-palpite" class="btn-principal">Chutar</button>
+                    <p class="contador">Palpites restantes: <strong id="palpites-restantes">6</strong></p>
+                </section>
+            </div>
+
+            <!-- Coluna da direita: gráfico -->
+            <div class="coluna-direita">
+                <canvas id="grafico" role="img" aria-label="Gráfico vazio."></canvas>
+                <div class="legenda" aria-hidden="true">
+                    <span><i class="marca circulo"></i>consulta</span>
+                    <span><i class="marca losango"></i>dica</span>
+                    <span><i class="tracejado"></i>seu último palpite</span>
+                </div>
+                <p id="mensagem" class="mensagem" role="status" aria-live="polite"></p>
+                <button id="btn-ver-resultado" class="btn-secundario escondida">Ver resultado</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- ================= FIM DE JOGO (aparece por cima) ================= -->
+    <div id="fim" class="fundo-escuro escondida">
+        <div class="cartao-fim" role="dialog" aria-modal="true" aria-labelledby="fim-titulo" aria-describedby="fim-texto">
+            <h2 id="fim-titulo"></h2>
+            <p id="fim-texto"></p>
+            <p id="fim-formula" class="formula"></p>
+
+            <div class="estatisticas">
+                <div><strong id="fim-palpites"></strong><span>palpites</span></div>
+                <div><strong id="fim-consultas"></strong><span>consultas</span></div>
+            </div>
+
+            <h3 id="titulo-ranking">Ranking de hoje</h3>
+            <ol id="ranking" class="ranking"></ol>
+
+            <div class="linha botoes-fim">
+                <button id="btn-fechar" class="btn-secundario">Ver o gráfico</button>
+                <button id="btn-outro-nivel" class="btn-principal">Escolher outro nível</button>
+            </div>
+            <p class="ajuda centro">Esc fecha esta janela.</p>
+        </div>
+    </div>
+
+    <!-- Camada dos efeitos de acerto (faíscas e selos). Não recebe clique. -->
+    <div id="efeitos" aria-hidden="true"></div>
 
     <script src="script.js"></script>
 </body>
