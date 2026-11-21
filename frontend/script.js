@@ -559,6 +559,14 @@ async function consultar() {
         return;
     }
 
+    // Confere a faixa antes de gastar uma consulta na API (a API também confere)
+    const numX = Number(x);
+    if (!Number.isFinite(numX) || numX < -10 || numX > 10) {
+        mostrarErro("erro-consulta", "O x deve estar entre -10 e 10.", ["valor-x"]);
+        el("valor-x").focus();
+        return;
+    }
+
     esperando = true;
     atualizarContadores();
     const resposta = await postar("/api/consultar", { nivel: nivel, x: x });
