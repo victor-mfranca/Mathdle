@@ -122,6 +122,12 @@ async function consultar() {
         return;
     }
 
+    const numX = Number(x);
+    if (!Number.isFinite(numX) || numX < -10 || numX > 10) {
+        mostrarMensagem("O x deve estar entre -10 e 10.", "erro");
+        return;
+    }
+
     const resposta = await postar("/api/consultar", { nivel: nivel, x: x });
     if (resposta.erro) {
         mostrarMensagem(resposta.erro, "erro");
@@ -136,12 +142,24 @@ async function consultar() {
 }
 
 async function chutar() {
+    const a = Number(el("coef-a").value);
+    const b = Number(el("coef-b").value);
+    const c = Number(el("coef-c").value || 0);
+
+    if (
+        !Number.isInteger(a) || !Number.isInteger(b) || !Number.isInteger(c) ||
+        a < -5 || a > 5 || b < -5 || b > 5 || c < -5 || c > 5
+    ) {
+        mostrarMensagem("Os coeficientes devem ser inteiros de -5 a 5.", "erro");
+        return;
+    }
+
     const dados = {
         nivel: nivel,
         tipo: el("tipo").value,
-        a: el("coef-a").value,
-        b: el("coef-b").value,
-        c: el("coef-c").value || 0,
+        a: a,
+        b: b,
+        c: c,
         xs_vistos: pontos.map(function (p) { return p.x; }),
     };
 
