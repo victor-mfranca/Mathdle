@@ -120,6 +120,9 @@ conferir("palpite errado na tentativa 5 tem comparacao com tipo_certo",
          s == 200 and "tipo_certo" in r.get("comparacao", {}), (s, r))
 s, r = chamar("POST", "/palpite", {**palpite, "tentativa": "abc"})
 conferir("tentativa = 'abc' é rejeitada", eh_erro(s, r), (s, r))
+for tentativa in [99, 7]:
+    s, r = chamar("POST", "/palpite", {**palpite, "tentativa": tentativa})
+    conferir(f"tentativa = {tentativa} é rejeitada", eh_erro(s, r), (s, r))
 
 # ---------- POST /api/resultado ----------
 print("POST /api/resultado")

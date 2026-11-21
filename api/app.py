@@ -170,6 +170,10 @@ def palpite():
     except (ValueError, TypeError):
         return jsonify({"erro": "A tentativa deve ser um número inteiro"}), 400
 
+    # Cada partida tem no máximo 6 palpites. O 0 é aceito porque é o valor quando o campo não vem.
+    if tentativa < 0 or tentativa > 6:
+        return jsonify({"erro": "A tentativa deve ser um número de 1 a 6"}), 400
+
     if tipo_p not in TIPOS_POR_NIVEL[nivel]:
         return jsonify({"erro": "Esse tipo de função não existe neste nível"}), 400
 
