@@ -1,0 +1,9 @@
+# Padroniza as quebras de linha em LF (padrão do Linux, que é onde os containers rodam),
+# não importa se a pessoa usa Windows, Mac ou Linux.
+* text=auto eol=lf
+
+# Arquivos binários: o Git não deve mexer neles
+*.png binary
+*.jpg binary
+*.ico binary
+*.pdf binary
